@@ -1,0 +1,6 @@
+lista - Muestra quienes juegan
+random - Te arma super equipos
+equipos - Te muestra el ultimo random
+juega - Agregas un jugador
+baja - Le das de baja a alguien
+help - Lista los comandos disponibles
