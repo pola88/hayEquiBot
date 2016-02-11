@@ -5,29 +5,7 @@ require("jasmine-before-all");
 describe("Player model", () => {
 
   describe("nickname", () => {
-    describe("create in lowercase", () => {
-      let player;
-
-      beforeAll( done => {
-        jasmine.cleanDb( () => {
-          models.Player.create({ nickname: "UPPErCASE", chat_id: "1"})
-                .then( result => {
-                  player = result;
-                  done();
-                });
-        });
-      });
-
-      it("convert to lowercase", done => {
-        models.Player.findById(player.id)
-              .then( newResult => {
-                expect(newResult.nickname).toEqual("uppercase");
-                done();
-              });
-      });
-    });
-
-    describe("find with nickname in uppercase", () => {
+    describe("case insesitive", () => {
       let player;
 
       beforeAll( done => {
@@ -41,9 +19,29 @@ describe("Player model", () => {
       });
 
       it("find the player", done => {
-        models.Player.findOne({ where: { nickname: "LOWERCASE" }})
+        models.Player.findOne({ where: { nickname: { $iLike: "LOWERCASE" } }})
               .then( newResult => {
                 expect(newResult.id).toEqual(player.id);
+                done();
+              });
+      });
+    });
+
+    describe("repeated nickname", () => {
+      beforeAll( done => {
+        jasmine.cleanDb( () => {
+          models.Player.create({ nickname: "lowerCase", chat_id: "1"})
+                .then( () => {
+                  done();
+                });
+        });
+      });
+
+      it("find the player", done => {
+        let repeatedPlayer = models.Player.build({ nickname: "LOWERCASE", chat_id: "1"});
+        repeatedPlayer.validate()
+              .then( error => {
+                expect(error).not.toBe(undefined);
                 done();
               });
       });
