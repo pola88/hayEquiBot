@@ -1,0 +1,32 @@
+{
+  "name": "HayEquiBot",
+  "version": "0.0.1",
+  "description": "HayEquiBot",
+  "main": "index",
+  "scripts": {
+    "start": "node index.js",
+    "test": "npm run lint && npm run spec",
+    "lint": "eslint ./lib/* ./spec",
+    "spec": "node spec/spec_runner.js"
+  },
+  "author": "PoLa <pola88@gmail.com>",
+  "dependencies": {
+    "babel": "5.6.10",
+    "dotenv": "1.1.0",
+    "lodash": "4.3.0",
+    "pg": "4.4.0",
+    "q": "1.4.1",
+    "request-promise": "0.4.3",
+    "ws": "^0.7.2",
+    "node-telegram-bot-api": "0.20.1",
+    "sequelize": "3.19.2",
+    "sequelize-cli": "2.3.1"
+  },
+  "devDependencies": {
+    "jasmine": "2.2.1",
+    "jasmine-spec-reporter": "2.1.0",
+    "jasmine-before-all": "0.1.0",
+    "eslint": "0.22.1",
+    "babel-eslint": "4.1.8"
+  }
+}

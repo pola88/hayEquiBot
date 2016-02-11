@@ -1,0 +1,19 @@
+{
+  "development": {
+    "username": "pola",
+    "password": null,
+    "database": "hayequibot",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": null,
+    "database": "hayequibot_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "use_env_variable": "pg_conf"
+  }
+}

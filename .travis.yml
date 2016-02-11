@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "0.10.28"
+services:
+  - postgresql
+addons:
+  postgresql: "9.3"
+before_install:
+  - npm install -g jasmine-node
+before_script:
+  - psql -c 'create database hayequibot_test;' -U postgres
+  - npm install --save sequelize-cli
+  - sequelize db:migrate --env test
+script:
+  - npm test
