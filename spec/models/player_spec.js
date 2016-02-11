@@ -14,7 +14,7 @@ describe("Player model", () => {
                 .then( result => {
                   player = result;
                   done();
-                })
+                });
         });
       });
 
@@ -36,7 +36,7 @@ describe("Player model", () => {
                 .then( result => {
                   player = result;
                   done();
-                })
+                });
         });
       });
 
