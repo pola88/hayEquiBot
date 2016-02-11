@@ -25,6 +25,22 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'tg_players',
     associate: function(models) {
     },
+    hooks: {
+      beforeCreate: function(player, options, fn) {
+        if(player.nickname) {
+          player.nickname = player.nickname.toLowerCase();
+        }
+
+        fn(null, player);
+      },
+      beforeFind: function(options, fn) {
+        if(options.where && options.where.nickname && typeof options.where.nickname !== 'object') {
+          options.where.nickname = options.where.nickname.toLowerCase();
+        }
+
+        fn(null);
+      },
+    },
     classMethods: {
       findWithTeam: function(chatId) {
         return Player.findAll({ where: { chat_id: chatId, $not: [ { team: null } ] } });
