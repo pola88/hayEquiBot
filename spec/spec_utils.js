@@ -32,10 +32,11 @@ export default class Utils {
 
       options = _.merge(defaultOptions, options);
 
-      models.Player.findOrCreate({ where: defaultOptions })
+      models.Player.findOrCreate({ where: options })
             .then( result => {
               deferred.resolve(result[0]);
-            }, deferred.reject);
+            }, deferred.reject)
+            .catch(deferred.reject);
 
       return deferred.promise;
     }

@@ -1,0 +1,15 @@
+{
+  "message_id": 406,
+  "from": {
+            "id": 21667736,
+            "first_name": "Gronpola",
+            "username": "gronpola"
+          },
+  "chat": {
+            "id": -101724396,
+            "title": "Prueba",
+            "type": "group"
+          },
+  "date": 1455281528,
+  "text": "/lista@HayEquiBot"
+}

@@ -22,6 +22,7 @@
     "jasmine": true,
     "beforeEach": false,
     "beforeAll": false,
-    "expect": false
+    "expect": false,
+    "spyOn": false
   }
 }
