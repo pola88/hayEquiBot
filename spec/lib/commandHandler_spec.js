@@ -1,22 +1,28 @@
 import CommandHandler from "../../lib/commandHandler";
 import payload from "../assets/payload.json";
+import SpecUtils from "../spec_utils";
+import { Player } from "../../models";
 
 require("jasmine-before-all");
 
 describe("CommandHandler", () => {
   let commandHandler;
 
-  beforeAll( () => {
+  beforeAll( done => {
+    jasmine.cleanDb(done);
+  });
+
+  beforeEach( () => {
     commandHandler = new CommandHandler({
                                           sendChatAction: function(){},
                                           sendSticker: function(){},
                                           sendMessage: function(){}
                                         });
-    spyOn(commandHandler, "typing");
   });
 
   describe("List", () => {
     it("run List Command", done => {
+      spyOn(commandHandler, "typing");
       commandHandler.bot.sendMessage = function(chatId, text, options) {
         expect(chatId).toEqual(payload.chat.id);
         expect(text).not.toBeBlank();
@@ -59,6 +65,48 @@ describe("CommandHandler", () => {
         expect(commandHandler.bot.sendSticker).not.toHaveBeenCalled();
         expect(commandHandler.bot.sendMessage).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe("the nickname has a command", () => {
+    let player;
+    beforeAll( done => {
+      SpecUtils.createPlayer({ nickname: "(juega) @ljgarciaprieto", chat_id: payload.chat.id.toString() })
+               .then( newPlayer => {
+                 player = newPlayer;
+                 payload.text = "/baja (juega) @ljgarciaprieto";
+                 commandHandler.incomingMessage(payload);
+                 done();
+               });
+    });
+
+    it("deletes player", done => {
+      Player.findById(player.id)
+            .then( result => {
+              expect(result).toBeBlank();
+              done();
+            });
+    });
+  });
+
+  describe("the nickname has special character", () => {
+    let player;
+    beforeAll( done => {
+      SpecUtils.createPlayer({ nickname: "maxi\"", chat_id: payload.chat.id.toString() })
+               .then( newPlayer => {
+                 player = newPlayer;
+                 payload.text = "/baja maxi\"";
+                 commandHandler.incomingMessage(payload);
+                 done();
+               });
+    });
+
+    it("deletes player", done => {
+      Player.findById(player.id)
+            .then( result => {
+              expect(result).toBeBlank();
+              done();
+            });
     });
   });
 });
