@@ -109,4 +109,37 @@ describe("CommandHandler", () => {
             });
     });
   });
+
+  describe("receive the response of keyboard", () => {
+    let player;
+
+    beforeAll( done => {
+      SpecUtils.createPlayer({ chat_id: payload.chat.id.toString() })
+               .then( newPlayer => {
+                 player = newPlayer;
+
+                 payload.text = player.nickname;
+                 payload.reply_to_message = {
+                   text: "Quien se baja?"
+                 };
+
+                 spyOn(commandHandler.commands, "hideKeyboard");
+                 commandHandler.incomingMessage(payload);
+                 done();
+               });
+    });
+
+    it("deletes player", done => {
+      expect(commandHandler.commands.hideKeyboard).toHaveBeenCalled();
+      Player.findById(player.id)
+            .then( result => {
+              expect(result).toBeBlank();
+
+              //clean payload
+              delete payload.reply_to_message;
+              delete payload.replyFromKeyBoard;
+              done();
+            });
+    });
+  });
 });
