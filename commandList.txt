@@ -3,5 +3,6 @@ random - Te arma super equipos
 equipos - Te muestra el ultimo random
 juega - Agregas un jugador
 juego - Te agregas a vos mismo, si tenes nickname
-baja - Le das de baja a alguien
+baja - {nombre} Le das de baja a alguien
+baja - (Sin nombre) Seleccionas uno de la lista
 help - Lista los comandos disponibles
