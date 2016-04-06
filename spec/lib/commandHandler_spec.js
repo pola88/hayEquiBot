@@ -123,14 +123,12 @@ describe("CommandHandler", () => {
                    text: "Quien se baja?"
                  };
 
-                 spyOn(commandHandler.commands, "hideKeyboard");
                  commandHandler.incomingMessage(payload);
                  done();
                });
     });
 
     it("deletes player", done => {
-      expect(commandHandler.commands.hideKeyboard).toHaveBeenCalled();
       Player.findById(player.id)
             .then( result => {
               expect(result).toBeBlank();
