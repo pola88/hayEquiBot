@@ -11,6 +11,7 @@ describe("Remove command", () => {
 
   beforeAll( done => {
     chatId = payload.chat.id.toString();
+    payload.replyFromKeyBoard = false;
     jasmine.cleanDb(done);
   });
 
