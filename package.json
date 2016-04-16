@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon --watch lib --watch models index.js",
     "test": "npm run lint && npm run spec",
-    "lint": "eslint ./lib/* ./spec",
+    "lint": "eslint ./lib/**/* ./spec/**/*",
     "spec": "node spec/spec_runner.js"
   },
   "author": "PoLa <pola88@gmail.com>",
