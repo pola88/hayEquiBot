@@ -51,7 +51,7 @@ describe("Add command", () => {
       });
 
       it("returns the success message", () => {
-        expect(response.text).toEqual("Que viva el futbol!!\nAhora somos 1:\nfromTestWith@");
+        expect(response.text).toEqual("Que viva el futbol!!\nAhora somos 1:\nfromTestWith@\n-------------\n");
       });
     });
 

@@ -1,6 +1,7 @@
 import { List } from "../../../lib/commands";
 import payload from "../../assets/payload.json";
 import SpecUtil from "../../spec_utils";
+import { GroupConfig } from "../../../models";
 import Q from "q";
 import _ from "lodash";
 
@@ -22,6 +23,58 @@ describe("List command", () => {
     });
   });
 
+  describe("Get the players for the current chat without limit", () => {
+    let listCommand;
+    let currentPlayers;
+    let otherPlayers;
+
+    beforeAll( done => {
+      jasmine.cleanDb( () => {
+        listCommand = new List(payload);
+        let chatId = payload.chat.id.toString();
+        let promises = [];
+        promises.push(SpecUtil.createPlayer({ chat_id: chatId }));
+        promises.push(SpecUtil.createPlayer({ chat_id: chatId }));
+        promises.push(SpecUtil.createPlayer({ chat_id: chatId }));
+        promises.push(SpecUtil.createPlayer({ chat_id: chatId }));
+
+        Q.all(promises)
+         .then( result => {
+           currentPlayers = result;
+           promises = [];
+           promises.push(SpecUtil.createPlayer({ chat_id: "12" }));
+           promises.push(SpecUtil.createPlayer({ chat_id: "12" }));
+
+           Q.all(promises)
+            .then( secondResult => {
+              otherPlayers = secondResult;
+              done();
+            });
+         });
+      });
+    });
+
+    it("returns the list", done => {
+      listCommand.run()
+                 .then( response => {
+                   let nicknames = _.map(currentPlayers, player => player.nickname);
+                   let text = response.text;
+
+                   nicknames.forEach( nickname => {
+                    expect(text).toMatch(`${nickname}`);
+                   });
+
+                   nicknames = _.map(otherPlayers, player => player.nickname);
+
+                   nicknames.forEach( nickname => {
+                    expect(text).not.toMatch(`${nickname}`);
+                   });
+
+                   done();
+                 });
+    });
+  });
+
   describe("Get the players for the current chat", () => {
     let listCommand;
     let currentPlayers;
@@ -37,7 +90,6 @@ describe("List command", () => {
         promises.push(SpecUtil.createPlayer({ chat_id: chatId }));
         promises.push(SpecUtil.createPlayer({ chat_id: chatId }));
 
-
         Q.all(promises)
          .then( result => {
            currentPlayers = result;
@@ -48,7 +100,10 @@ describe("List command", () => {
            Q.all(promises)
             .then( secondResult => {
               otherPlayers = secondResult;
-              done();
+              GroupConfig.create({ chat_id: chatId, number_of_players: 3 })
+                         .then( () => {
+                           done();
+                         });
             });
          });
       });
