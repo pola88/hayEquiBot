@@ -7,4 +7,5 @@ baja - {nombre} Le das de baja a alguien
 baja - (Sin nombre) Seleccionas uno de la lista
 clean - Borra a todos los jugadores
 reset - Lo mismo que clean
+somos - Separa entre titulares y suplentes
 help - Lista los comandos disponibles
