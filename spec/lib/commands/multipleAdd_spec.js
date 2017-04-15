@@ -144,7 +144,6 @@ describe("MultipleAdd command", () => {
     describe("with /juega", () => {
       let chatId;
       let repeatedPlayer;
-      let response;
 
       beforeAll( done => {
         chatId = payload.chat.id.toString();
@@ -157,8 +156,7 @@ describe("MultipleAdd command", () => {
                   addCommand = new MultipleAdd(payload);
 
                   addCommand.run()
-                            .then( result => {
-                              response = result;
+                            .then( () => {
                               done();
                             });
                 });

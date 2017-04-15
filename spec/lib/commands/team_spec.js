@@ -149,7 +149,7 @@ describe("Team command", () => {
       });
 
       it("returns the teams", () => {
-        expect(response.text).toEqual(`<b>Equipo 1:</b>${teamA}\n<b>Equipo 2:</b>${teamB}`);
+        expect(response.text).toEqual(`<b>Equipo 1 (⚪️):</b>${teamA}\n<b>Equipo 2 (⚫️):</b>${teamB}`);
       });
     });
   });
