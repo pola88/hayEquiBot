@@ -179,7 +179,7 @@ describe("Remove command", () => {
       });
 
       it("returns the error message", () => {
-        expect(response.text).toEqual("Ya te diste de baja antes cagon!!(o nunca te sumaste)");
+        expect(response.text).toEqual("");
       });
     });
   });

@@ -1,11 +1,11 @@
-import { Add } from "../../../lib/commands";
+import { MultipleAdd } from "../../../lib/commands";
 import { Player } from "../../../models";
 import payload from "../../assets/payload.json";
 import SpecUtil from "../../spec_utils";
 
 require("jasmine-before-all");
 
-xdescribe("Add command", () => {
+describe("MultipleAdd command", () => {
   let addCommand;
 
   beforeAll( done => {
@@ -14,15 +14,15 @@ xdescribe("Add command", () => {
 
   describe("is", () => {
     it("with /juega@HayEquiBot", () => {
-      expect(Add.is("/juega@HayEquiBot pola")).toBe(true);
+      expect(MultipleAdd.is("/juega@HayEquiBot")).toBe(true);
     });
 
     it("with /juega", () => {
-      expect(Add.is("/juega pola")).toBe(true);
+      expect(MultipleAdd.is("/juega")).toBe(true);
     });
 
     it("with @HayEquiBot juega", () => {
-      expect(Add.is("@HayEquiBot juega pola")).toBe(true);
+      expect(MultipleAdd.is("@HayEquiBot juega")).toBe(true);
     });
   });
 
@@ -32,8 +32,8 @@ xdescribe("Add command", () => {
       let response;
 
       beforeAll( done => {
-        payload.text = "/juega@HayEquiBot fromTestWith@";
-        addCommand = new Add(payload);
+        payload.text = "/juega@HayEquiBot fromTestWith@, fromTestWith@2";
+        addCommand = new MultipleAdd(payload);
 
         addCommand.run()
                   .then( result => {
@@ -50,15 +50,23 @@ xdescribe("Add command", () => {
               });
       });
 
+      it("creates the player", done => {
+        Player.findOne({ where: { nickname: "fromTestWith@2", chat_id: payload.chat.id.toString() }})
+              .then( result => {
+                expect(result).not.toBeBlank();
+                done();
+              });
+      });
+
       it("returns the success message", () => {
-        expect(response.text).toEqual("Que viva el futbol!!\nAhora somos 1:\nfromTestWith@\n-------------\n");
+        expect(response.text).toEqual("Que viva el futbol!!\nAhora somos 2:\nfromTestWith@\nfromTestWith@2\n-------------\n");
       });
     });
 
     describe("with /juega", () => {
       beforeAll( done => {
-        payload.text = "/juega fromTest";
-        addCommand = new Add(payload);
+        payload.text = "/juega fromTest, fromTest2";
+        addCommand = new MultipleAdd(payload);
 
         addCommand.run()
                   .then( () => {
@@ -73,12 +81,20 @@ xdescribe("Add command", () => {
                 done();
               });
       });
+
+      it("creates the player 2", done => {
+        Player.findOne({ where: { nickname: "fromTest2", chat_id: payload.chat.id.toString() }})
+              .then( result => {
+                expect(result).not.toBeBlank();
+                done();
+              });
+      });
     });
 
     describe("with @HayEquiBot juega", () => {
       beforeAll( done => {
-        payload.text = "@HayEquiBot juega fromTestWithMention";
-        addCommand = new Add(payload);
+        payload.text = "@HayEquiBot juega fromTestWithMention, fromTestWithMention2";
+        addCommand = new MultipleAdd(payload);
 
         addCommand.run()
                   .then( () => {
@@ -93,14 +109,41 @@ xdescribe("Add command", () => {
                 done();
               });
       });
+
+      it("creates the player", done => {
+        Player.findOne({ where: {nickname: "fromTestWithMention2", chat_id: payload.chat.id.toString() }})
+              .then( result => {
+                expect(result).not.toBeBlank();
+                done();
+              });
+      });
+    });
+
+    describe("with one mame", () => {
+      beforeAll( done => {
+        payload.text = "/juega fromTestOnlyMe";
+        addCommand = new MultipleAdd(payload);
+
+        addCommand.run()
+                  .then( () => {
+                    done();
+                  });
+      });
+
+      it("creates the player", done => {
+        Player.findOne({ where: { nickname: "fromTestOnlyMe", chat_id: payload.chat.id.toString() }})
+              .then( result => {
+                expect(result).not.toBeBlank();
+                done();
+              });
+      });
     });
   });
-
+  //TODO: should return an error
   describe("repeated nickname", () => {
     describe("with /juega", () => {
       let chatId;
       let repeatedPlayer;
-      let response;
 
       beforeAll( done => {
         chatId = payload.chat.id.toString();
@@ -110,11 +153,10 @@ xdescribe("Add command", () => {
                   repeatedPlayer = player;
 
                   payload.text = `/juega ${player.nickname}`;
-                  addCommand = new Add(payload);
+                  addCommand = new MultipleAdd(payload);
 
                   addCommand.run()
-                            .then( result => {
-                              response = result;
+                            .then( () => {
                               done();
                             });
                 });
@@ -128,43 +170,6 @@ xdescribe("Add command", () => {
                 done();
               });
       });
-
-      it("returns error message", () => {
-        expect(response.text).toEqual("Ya estas anotado pibe, gracias que podes \"correr\" y queres jugar por 2?");
-      });
-    });
-
-    describe("with /juega and upperCase", () => {
-      let chatId;
-      let response;
-
-      beforeAll( done => {
-        chatId = payload.chat.id.toString();
-
-        SpecUtil.createPlayer({ nickname: "uPpeRCase", chat_id: chatId })
-                .then( () => {
-                  payload.text = `/juega UPPERCASE`;
-                  addCommand = new Add(payload);
-
-                  addCommand.run()
-                            .then( result => {
-                              response = result;
-                              done();
-                            });
-                });
-      });
-
-      it("does not create the player", done => {
-        Player.findAll({ where: { nickname: { $iLike: "uPpeRCase"}, chat_id: chatId }})
-              .then( result => {
-                expect(result.length).toEqual(1);
-                done();
-              });
-      });
-
-      it("returns error message", () => {
-        expect(response.text).toEqual("Ya estas anotado pibe, gracias que podes \"correr\" y queres jugar por 2?");
-      });
     });
   });
 
@@ -175,7 +180,7 @@ xdescribe("Add command", () => {
       beforeAll( done => {
 
         payload.text = "/juega@HayEquiBot";
-        addCommand = new Add(payload);
+        addCommand = new MultipleAdd(payload);
 
         addCommand.run()
                   .then( result => {
@@ -192,7 +197,7 @@ xdescribe("Add command", () => {
     describe("with /juega", () => {
       beforeAll( done => {
         payload.text = "/juega";
-        addCommand = new Add(payload);
+        addCommand = new MultipleAdd(payload);
 
         addCommand.run()
                   .then( result => {
@@ -209,7 +214,7 @@ xdescribe("Add command", () => {
     describe("with @HayEquiBot juega", () => {
       beforeAll( done => {
         payload.text = "@HayEquiBot juega";
-        addCommand = new Add(payload);
+        addCommand = new MultipleAdd(payload);
 
         addCommand.run()
                   .then( result => {
